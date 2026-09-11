@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#245a9a" />
+  <title>興嘉國小｜學年會議紀錄系統</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+
+  <section id="loginView" class="login-shell">
+    <form id="loginForm" class="login-card" autocomplete="on">
+      <div class="brand-mark">興嘉國小</div>
+      <h1>學年會議紀錄系統</h1>
+      <p>Sing Chia Elementary School</p>
+      <label class="login-field">帳號<input id="loginUsername" name="username" autocomplete="username" required placeholder="請輸入帳號"></label>
+      <label class="login-field">密碼<input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="請輸入密碼"></label>
+      <button class="btn primary login-submit" type="submit" id="loginBtn">登入</button>
+      <div class="login-note">帳號由教務處／系統管理者建立。首次登入請依系統提示修改密碼。</div>
+    </form>
+  </section>
+
+  <div id="appView" class="app hidden">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">SING CHIA ELEMENTARY SCHOOL</div>
+        <h1>學年會議紀錄</h1>
+      </div>
+      <div class="user-box">
+        <div><strong id="userName">—</strong><span id="userRole" class="role-chip">—</span></div>
+        <div class="action-row"><button class="btn ghost" id="changePasswordBtn">修改密碼</button><button class="btn ghost" id="logoutBtn">登出</button></div>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-view="recordsView">會議紀錄</button>
+      <button class="tab" data-view="editorView" id="newRecordTab">新增 / 編修</button>
+      <button class="tab hidden" data-view="adminView" id="adminTab">管理 / 回覆</button>
+      <button class="tab hidden" data-view="usersView" id="usersTab">帳號管理</button>
+    </nav>
+
+    <main class="container">
+      <section id="recordsView" class="view">
+        <div class="panel">
+          <div class="panel-head"><div><h2>會議紀錄查詢</h2><p>教師可檢視並編修所屬學年；處室主任與校長可檢視與回覆。</p></div><button class="btn primary" id="newBtn">＋ 新增會議紀錄</button></div>
+          <div class="filters">
+            <label>學年度<input id="filterYear" type="number" min="100" max="999" placeholder="115"></label>
+            <label>學期<select id="filterSemester"><option value="">全部</option><option value="1">第一學期</option><option value="2">第二學期</option></select></label>
+            <label>學年<select id="filterGrade"><option value="">全部</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
+            <button class="btn secondary" id="searchBtn">查詢</button><button class="btn ghost" id="exportYearBtn">匯出學年 PDF</button>
+          </div>
+          <div id="recordList" class="record-list"></div>
+        </div>
+      </section>
+
+      <section id="editorView" class="view hidden">
+        <div class="panel">
+          <div class="panel-head"><div><h2 id="editorTitle">新增學年會議紀錄</h2><p>依原有紙本格式線上登打，送出後仍可依權限編修。</p></div><div class="action-row"><button class="btn ghost" id="backBtn">返回</button><button class="btn secondary" id="saveDraftBtn">儲存草稿</button><button class="btn primary" id="submitBtn">存檔送出</button></div></div>
+          <form id="recordForm" class="form-grid" autocomplete="off">
+            <input type="hidden" id="recordId">
+            <label>學年度<input id="schoolYear" type="number" required placeholder="115"></label>
+            <label>學期<select id="semester" required><option value="1">第一學期</option><option value="2">第二學期</option></select></label>
+            <label>學年<select id="grade" required><option value="1">一年級</option><option value="2">二年級</option><option value="3">三年級</option><option value="4">四年級</option><option value="5">五年級</option><option value="6">六年級</option></select></label>
+            <label>第幾次會議<input id="meetingNo" type="number" min="1" required></label>
+            <label>日期<input id="meetingDate" type="date" required></label>
+            <label>時間<input id="meetingTime" type="time" required></label>
+            <label>主席<input id="chair" required></label><label>會議記錄<input id="recorder" required></label>
+            <label class="span-2">地點<input id="location" required></label>
+            <label class="span-2">出席者<textarea id="attendees" rows="3" placeholder="請輸入出席者姓名，可用頓號或換行分隔"></textarea></label>
+            <label class="span-2">出席者簽到圖檔<input id="attendanceImage" type="file" accept="image/*"></label>
+            <label class="span-2">報告事項與討論議題<textarea id="agenda" rows="6"></textarea></label>
+            <label class="span-2">會議記錄／議題討論<textarea id="discussion" rows="10"></textarea></label>
+            <div class="span-2 section-title">學年會議記錄照片（建議 2–4 張）</div>
+            <div class="span-2 photo-grid">
+              <label>照片 1<input class="meetingPhoto" data-index="0" type="file" accept="image/*"><input class="photoCaption" data-index="0" placeholder="照片說明"></label>
+              <label>照片 2<input class="meetingPhoto" data-index="1" type="file" accept="image/*"><input class="photoCaption" data-index="1" placeholder="照片說明"></label>
+              <label>照片 3<input class="meetingPhoto" data-index="2" type="file" accept="image/*"><input class="photoCaption" data-index="2" placeholder="照片說明"></label>
+              <label>照片 4<input class="meetingPhoto" data-index="3" type="file" accept="image/*"><input class="photoCaption" data-index="3" placeholder="照片說明"></label>
+            </div>
+            <div id="existingPhotos" class="span-2 existing-photos"></div>
+          </form>
+        </div>
+      </section>
+
+      <section id="adminView" class="view hidden">
+        <div class="panel"><div class="panel-head"><div><h2>管理與處室回覆</h2><p>管理者可編修全部紀錄；處室主任與校長可檢視紀錄並填寫各自回覆。</p></div></div>
+          <div class="filters"><label>學年度<input id="adminYear" type="number" placeholder="115"></label><label>學年<select id="adminGrade"><option value="">全部</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label><button class="btn secondary" id="adminSearchBtn">查詢</button></div>
+          <div id="adminList" class="record-list"></div>
+        </div>
+      </section>
+
+      <section id="usersView" class="view hidden">
+        <div class="panel">
+          <div class="panel-head"><div><h2>帳號管理</h2><p>僅系統管理者可新增帳號、設定角色與學年、重設密碼或停用帳號。</p></div><button class="btn primary" id="newUserBtn">＋ 新增帳號</button></div>
+          <div id="userList" class="user-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="reviewDialog">
+      <div class="dialog-head"><div><h3>會議紀錄檢視與回覆</h3><p id="reviewMeta"></p></div><button class="icon-btn" id="closeReview">✕</button></div>
+      <div id="reviewContent" class="review-content"></div>
+      <div class="reply-box"><label>我的回覆<textarea id="replyText" rows="5" placeholder="請輸入回覆內容"></textarea></label><div class="action-row"><button class="btn ghost" id="exportSingleBtn">匯出本筆 PDF</button><button class="btn primary" id="saveReplyBtn">儲存回覆</button></div></div>
+    </dialog>
+
+    <dialog id="passwordDialog" class="small-dialog">
+      <div class="dialog-head"><div><h3>修改密碼</h3><p id="passwordHint">請輸入目前密碼與新密碼。</p></div><button class="icon-btn" id="closePassword">✕</button></div>
+      <form id="passwordForm" class="dialog-form"><label>目前密碼<input id="currentPassword" type="password" autocomplete="current-password" required></label><label>新密碼<input id="newPassword" type="password" autocomplete="new-password" minlength="8" required></label><label>確認新密碼<input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label><div class="form-note">至少 8 碼，且需包含英文字母與數字。</div><button class="btn primary" type="submit">儲存新密碼</button></form>
+    </dialog>
+
+    <dialog id="userDialog" class="small-dialog">
+      <div class="dialog-head"><div><h3 id="userDialogTitle">新增帳號</h3><p>建立教師、主任、校長或管理者登入帳號。</p></div><button class="icon-btn" id="closeUserDialog">✕</button></div>
+      <form id="userForm" class="dialog-form"><input id="editUsernameOriginal" type="hidden"><label>登入帳號<input id="accountUsername" required pattern="[a-zA-Z0-9._-]{3,40}" placeholder="例如 grade1"></label><label>姓名 / 顯示名稱<input id="accountName" required placeholder="例如 一年級學年主任"></label><label>角色<select id="accountRole"><option value="teacher">教師</option><option value="academic">教務主任</option><option value="student_affairs">學務主任</option><option value="general_affairs">總務主任</option><option value="counseling">輔導主任</option><option value="principal">校長</option><option value="admin">系統管理者</option></select></label><label id="accountGradeWrap">學年<select id="accountGrade"><option value="1">一年級</option><option value="2">二年級</option><option value="3">三年級</option><option value="4">四年級</option><option value="5">五年級</option><option value="6">六年級</option></select></label><label>初始 / 重設密碼<input id="accountPassword" type="password" minlength="8" placeholder="新帳號必填；既有帳號留白不變更"></label><label class="check-row"><input id="accountActive" type="checkbox" checked>啟用帳號</label><div class="form-note">新帳號首次登入會被要求修改密碼。</div><button class="btn primary" type="submit">儲存帳號</button></form>
+    </dialog>
+  </div>
+  <script src="config.js"></script><script src="app.js"></script>
+</body>
+</html>
